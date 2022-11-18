@@ -1,0 +1,71 @@
+Lab 3 part 1 walkthrough:
+- Open resource group and select storage account
+	- Show how to add a storage blob data contributor (Access Controls -> Role assignments -> Add)
+- Open Synapse Studio and review Access Control in security
+	- Show current assignments
+	- Show how to add a workspace role
+	- Show how to assign rights to an existing workspace item
+
+
+Lab 3 part 2 walkthrough:
+- Show Log Analytics account
+- Navigate to Diagnostic settings in Synapse service
+	- Add diagnostic setting -- point items to Log Analytics workspace
+- Open dedicated SQL pool (note:  must have one created!)
+	- Add diagnostic setting -- point items to Log Analytics workspace
+- Open Spark pool
+	- Add diagnostic setting -- point items to Log Analytics workspace
+- Open Data Explorer pool	
+	- Add diagnostic setting -- point items to Log Analytics workspace
+- Run a few serverless SQL pool scripts and Spark notebook
+
+Follow steps to set up Spark app logging
+- Review Log Analytics and Key Vault
+- Ensure Synapse has a linked service to Key Vault
+- Ensure managed identity for Synapse has Secret Get + List permissions on Key Vault
+- Pre-create a Spark app logging config file.  Open it and review.
+- Import the configuration file in Synapse Studio:  Manage -> Apache Spark configurations -> Import
+- Upload a file and call it synapse-spark-config
+- Go to Apache Spark pools -> notebookrunner -> ... -> Apache Spark configurations
+- Select syanpse-spark-config configuration and Apply
+- Run the Spark Config Test notebook
+- After a few minutes, run the following query in Log Analytics -> General -> Logs:
+
+SparkLoggingEvent_CL
+| project TimeGenerated, logger_name_s, j=parse_json(Message)
+| extend source=j.source_data, notebook=j.notebook, msg=j.message
+| where logger_name_s contains "azdata-precon-dev"
+
+Lab 3 Part 3 walkthrough:
+
+- Open Log Analytics and run queries
+	- Settings -> Tables to view the tables
+	- General -> Logs to run queries
+
+// Review all queries
+SynapseBuiltinSqlPoolRequestsEnded 
+
+// Failed queries
+SynapseBuiltinSqlPoolRequestsEnded 
+| where ResultType == "Failed"
+
+// Minimum query size for cost purposes is 10MB.  Here are queries which ran longer or had a higher cost.
+SynapseBuiltinSqlPoolRequestsEnded 
+| where ResultType == "Succeeded"
+| where Properties.dataProcessedBytes != 10000000
+| project TimeGenerated, Properties.dataProcessedBytes, Properties.command,
+    Properties.queryText
+
+- Open Azure Synapse Toolbox:  https://github.com/microsoft/Azure_Synapse_Toolbox/blob/master/Monitor_Workbooks/README.md#pre-requisites
+- Review queries in Log_Analytics_queries
+- Run ServerlessSql\CostPerUser.txt
+- Run StandaloneSQLPool\RowsProcessedPerHour (assuming we have dedicated SQL pool resources!)
+- Run Spark\CoresAndMemoryByApplication.kql
+- Run Pipelines\TopNLongestRunningPipelines.kql
+
+Create a Monitor workbook
+- Navigate to General -> Workbooks in Log Analytics 
+- Select "+ New" to add a new workbook
+- Select "</>" (Advanced Editor) at the TOP, NOT THE QUERY!
+- Paste contents of MonitorWorkbooks/SynapseServerlessWorkbook.workbook in and select Apply
+- Review contents, noting that this is across all Synapse workspaces
