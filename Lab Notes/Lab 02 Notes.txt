@@ -1,0 +1,45 @@
+Lab 2 part 1 walkthrough:
+- Show two newly-created workspaces
+- Connect one workspace to GitHub and import resources
+	- Manage > Git configuration
+- Show how to create a new notebook
+	- Develop > + > Notebook
+- Walk through notebook 001 - The Basics of Python
+	- Note that it takes a while for the Spark pool to start up!
+	- Anything we can do while it's starting up?  Maybe manage + use a package?
+- Manage and use a package
+	- Open VS Code and navigate to custompkg folder
+	- Review README.md
+	- Review operations.py
+	- Review __init__.py
+	- Build package
+	- Manage > Workspace packages
+	- Show upload.  Upload operations package if not there.
+	- Navigate to Apache Spark pools menu option.
+	- ... > Packages > + Select from workspace packages > operations-...
+		(Note:  probably want this before the lab as it can take 10-12 minutes!)
+	- Run 002 - Test Custom Code
+
+
+Lab 2 part 2 walkthrough:
+- Run notebook 003 - Load Data
+- Review results in storage
+- Create a serverless database called InspectionsDB
+- Run SQL scripts 001 through 004 against InspectionsDB
+- Run SQL script 005 - Query Inspections
+- Run notebook 004 - Create Refined Lake DB tables
+	- Create inspection_lake database
+	- Create tables in inspection_lake via notebook
+	- Review inspection_lake via notebook
+- Run SQL script 006 - Query inspection_lake
+	Review inspection_lake via serverless SQL pool
+
+
+Lab 2 Part 3 walkthrough:
+- Review notebook 005 - Curate inspections - DO NOT RUN!
+- Open pipeline 001 - Load Inspection Measures
+	- Review notebook inside pipeline
+	- Select Add Trigger and review the options
+	- Choose Trigger Now from the Add trigger menu to start the process
+- After data load completes, refresh the inspection_lake database and review the tables
+- Right-click on `inspectionmeasures` and select the top 100 rows
